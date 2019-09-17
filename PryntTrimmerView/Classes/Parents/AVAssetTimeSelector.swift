@@ -31,7 +31,10 @@ public class AVAssetTimeSelector: UIView, UIScrollViewDelegate {
         super.init(coder: aDecoder)
         setupSubviews()
     }
-
+    
+    func setDefaultImage(_ image: UIImage) {
+        self.assetPreview.defaultImage = image
+    }
     func setupSubviews() {
         setupAssetPreview()
         constrainAssetPreview()

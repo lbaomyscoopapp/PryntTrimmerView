@@ -16,7 +16,8 @@ class AssetVideoScrollView: UIScrollView {
     let contentView = UIView()
     var maxDuration: Double = 15
     private var generator: AVAssetImageGenerator?
-
+    var defaultImage: UIImage?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSubviews()
@@ -52,19 +53,19 @@ class AssetVideoScrollView: UIScrollView {
     }
 
     internal func regenerateThumbnails(for asset: AVAsset) {
-        guard let thumbnailSize = getThumbnailFrameSize(from: asset), thumbnailSize.width != 0 else {
-            print("Could not calculate the thumbnail size.")
-            return
+        var thumbnailSize = getThumbnailFrameSize(from: asset)
+        if thumbnailSize?.width == 0 || thumbnailSize == nil  {
+           thumbnailSize = CGSize(width: 45, height: 45)
         }
 
         generator?.cancelAllCGImageGeneration()
         removeFormerThumbnails()
         let newContentSize = setContentSize(for: asset)
-        let visibleThumbnailsCount = Int(ceil(frame.width / thumbnailSize.width))
-        let thumbnailCount = Int(ceil(newContentSize.width / thumbnailSize.width))
-        addThumbnailViews(thumbnailCount, size: thumbnailSize)
+        let visibleThumbnailsCount = Int(ceil(frame.width / thumbnailSize!.width))
+        let thumbnailCount = Int(ceil(newContentSize.width / thumbnailSize!.width))
+        addThumbnailViews(thumbnailCount, size: thumbnailSize!)
         let timesForThumbnail = getThumbnailTimes(for: asset, numberOfThumbnails: thumbnailCount)
-        generateImages(for: asset, at: timesForThumbnail, with: thumbnailSize, visibleThumnails: visibleThumbnailsCount)
+        generateImages(for: asset, at: timesForThumbnail, with: thumbnailSize!, visibleThumnails: visibleThumbnailsCount)
     }
 
     private func getThumbnailFrameSize(from asset: AVAsset) -> CGSize? {
@@ -145,6 +146,15 @@ class AssetVideoScrollView: UIScrollView {
                     self?.displayImage(cgimage, at: count)
                     count += 1
                 })
+            }else {
+                DispatchQueue.main.async {
+                    if count == 0 {
+                        self?.displayImage(self?.defaultImage?.cgImage ?? (UIImage(named:"ic_addMusicView")?.cgImage)!, at: visibleThumnails)
+                    }
+                    self?.displayImage(self?.defaultImage?.cgImage ?? (UIImage(named:"ic_addMusicView")?.cgImage)!, at: count)
+                    count += 1
+                }
+                
             }
         }
 

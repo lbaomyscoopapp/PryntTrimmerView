@@ -104,6 +104,11 @@ public protocol TrimmerViewDelegate: class {
         assetPreview.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
 
+    
+    public func setThumbDefault(_ image: UIImage) {
+        self.setDefaultImage(image)
+    }
+    
     private func setupTrimmerView() {
 
         trimView.layer.borderWidth = 2.0
@@ -111,7 +116,6 @@ public protocol TrimmerViewDelegate: class {
         trimView.translatesAutoresizingMaskIntoConstraints = false
         trimView.isUserInteractionEnabled = false
         addSubview(trimView)
-
         trimView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         trimView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         leftConstraint = trimView.leftAnchor.constraint(equalTo: leftAnchor)
